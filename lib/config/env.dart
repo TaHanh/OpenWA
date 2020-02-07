@@ -1,4 +1,4 @@
-final String nameApp = "Ringtone";
+final String nameApp = "Open WhatsApp";
 final String mailFeedback = "tahanh.aib@gmail.com";
 final String urlApp = "https://play.google.com/store/apps/details?id=";
 

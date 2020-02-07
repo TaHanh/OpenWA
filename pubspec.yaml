@@ -32,6 +32,8 @@ dependencies:
   flutter_open_whatsapp:
   country_code_picker:
   url_launcher:
+  flutter_html:
+  flutter_launch:
 
 dev_dependencies:
   flutter_test:

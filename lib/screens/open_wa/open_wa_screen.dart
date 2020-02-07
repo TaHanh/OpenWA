@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:math';
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OpenWAScreen extends StatefulWidget {
   OpenWAScreen({Key key}) : super(key: key);
@@ -13,14 +12,17 @@ class OpenWAScreen extends StatefulWidget {
   _OpenWAScreenState createState() => new _OpenWAScreenState();
 }
 
-class _OpenWAScreenState extends State<OpenWAScreen> {
+class _OpenWAScreenState extends State<OpenWAScreen> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController phoneTxtController = new TextEditingController();
   TextEditingController nameTxtController = new TextEditingController();
   TextEditingController messageTxtController = new TextEditingController();
   List<dynamic> numbers = [];
   bool isSaveNumber = false;
-  String code = "+1";
+  String code = "+84";
+  // String code = "+1";
   @override
   void initState() {
     super.initState();
@@ -28,12 +30,25 @@ class _OpenWAScreenState extends State<OpenWAScreen> {
   }
 
   @override
-  void openNewWA() {
+  void openNewWA(key) async {
     if (phoneTxtController.text != "") {
+      FocusScope.of(context).requestFocus(FocusNode());
       String phone = code + phoneTxtController.text;
       // print(phone);
       // print(messageTxtController.text);
-      // FlutterOpenWhatsapp.sendSingleMessage(phone, messageTxtController.text);
+      if (key) {
+        FlutterOpenWhatsapp.sendSingleMessage(phone, messageTxtController.text);
+      } else {
+        var whatsappUrl = "whatsapp://send?phone=$phone&text=${messageTxtController.text}";
+        await canLaunch(whatsappUrl)
+            ? launch(whatsappUrl)
+            : scaffoldKey.currentState.showSnackBar(new SnackBar(
+                content: new Text("Whatsapp is not installed!"),
+                duration: Duration(seconds: 1),
+                backgroundColor: Color(0xFF009688).withOpacity(0.5),
+              ));
+      }
+
       if (isSaveNumber) {
         this.numbers.add(
           {"name": nameTxtController.text, "phone": phone},
@@ -141,7 +156,8 @@ class _OpenWAScreenState extends State<OpenWAScreen> {
                           Container(
                             width: 100.0,
                             child: CountryCodePicker(
-                              initialSelection: 'US',
+                              initialSelection: 'VN',
+                              // initialSelection: 'US',
                               onChanged: (code) {
                                 print(code.dialCode);
                                 setState(() {
@@ -203,7 +219,7 @@ class _OpenWAScreenState extends State<OpenWAScreen> {
                         children: <Widget>[
                           FlatButton(
                             onPressed: () {
-                              openNewWA();
+                              openNewWA(true);
                             },
                             color: Color(0xFF075e54),
                             child: Text(
@@ -213,7 +229,7 @@ class _OpenWAScreenState extends State<OpenWAScreen> {
                           ),
                           FlatButton(
                             onPressed: () {
-                              FlutterOpenWhatsapp.sendSingleMessage("918179015345", "Hello");
+                              openNewWA(false);
                             },
                             color: Color(0xFF075e54),
                             child: Text(
@@ -258,7 +274,7 @@ class _OpenWAScreenState extends State<OpenWAScreen> {
                             children: <Widget>[
                               Text(
                                 numbers[(numbers.length - 1) - index]["phone"],
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: 16.0),
                               ),
                               Text(numbers[(numbers.length - 1) - index]["name"]),
                             ],

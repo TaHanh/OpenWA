@@ -181,6 +181,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_html:
+    dependency: "direct main"
+    description:
+      name: flutter_html
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.11.1"
+  flutter_launch:
+    dependency: "direct main"
+    description:
+      name: flutter_launch
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   flutter_open_whatsapp:
     dependency: "direct main"
     description:

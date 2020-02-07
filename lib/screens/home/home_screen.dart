@@ -1,14 +1,10 @@
-import 'dart:convert';
-import 'dart:math';
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
-import 'package:country_code_picker/country_code_picker.dart';
+import 'package:guide_ice_scream/config/env.dart';
+import 'package:guide_ice_scream/main.dart';
+import 'package:guide_ice_scream/screens/about/about_screen.dart';
 import 'package:guide_ice_scream/screens/link/link_screen.dart';
 import 'package:guide_ice_scream/screens/open_wa/open_wa_screen.dart';
 import 'package:share/share.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,13 +16,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // AdmobInterstitial interstitialAd;
   // AdmobBannerSize bannerSize;
+  String appId;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
   final List<Widget> _children = [OpenWAScreen(), LinkScreen()];
   @override
   void initState() {
     super.initState();
-    // bannerSize = AdmobBannerSize.BANNER;
+    getAppID();
   }
 
   void onTabTapped(int index) {
@@ -45,12 +42,42 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  launchURL() async {
-    const url = 'mailto:tahanh.aib@gmail.com?subject=News&body=New%20plugin';
+  launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
+    }
+  }
+
+  getAppID() async {
+    appId = await MyApp.platform.invokeMethod("getAppId");
+    setState(() {
+      appId;
+    });
+  }
+
+  @override
+  void callBack(key, data) {
+    switch (key) {
+      case "RATE":
+        MyApp.platform.invokeMethod("rateManual");
+        break;
+      case "SHARE":
+        String link = urlApp + appId;
+        Share.share(link);
+        break;
+      case "FEEDBACK":
+        launchURL("mailto:${mailFeedback}?subject=FeedBack ${nameApp}&body=");
+        break;
+      case "ABOUT":
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AboutScreen()),
+        );
+
+        break;
+      default:
     }
   }
 
@@ -59,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("Open WhatsApp"),
+        title: Text(nameApp),
         backgroundColor: Color(0xFF075e54),
         automaticallyImplyLeading: false,
         actions: <Widget>[
@@ -74,33 +101,58 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _children[_currentIndex],
       drawer: Drawer(
         child: ListView(
-          // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
-              child: Text('Drawer Header'),
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.fromLTRB(0, 50.0, 0, 30.0),
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Color(0xFF075e54),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image.asset(
+                    "assets/images/logo.png",
+                    height: 100.0,
+                    fit: BoxFit.contain,
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(top: 15.0),
+                    child: Text(
+                      nameApp,
+                      style: TextStyle(fontSize: 18.0, color: Colors.white),
+                    ),
+                  )
+                ],
               ),
             ),
             ListTile(
               title: Text('Share app'),
+              leading: Icon(Icons.share),
               onTap: () {
-                Share.share("https://play.google.com/store");
+                callBack("SHARE", "");
+              },
+            ),
+            ListTile(
+              title: Text('Rate app'),
+              leading: Icon(Icons.star_border),
+              onTap: () {
+                callBack("RATE", "");
               },
             ),
             ListTile(
               title: Text('Feedback to us'),
+              leading: Icon(Icons.feedback),
               onTap: () {
-                // Update the state of the app.
-                // ...
+                callBack("FEEDBACK", "");
               },
             ),
             ListTile(
               title: Text('About'),
+              leading: Icon(Icons.info_outline),
               onTap: () {
-                // Update the state of the app.
-                // ...
+                callBack("ABOUT", "");
               },
             ),
           ],

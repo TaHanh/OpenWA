@@ -1,13 +1,7 @@
-import 'dart:convert';
-import 'dart:math';
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:guide_ice_scream/screens/open_wa/open_wa_screen.dart';
 import 'package:share/share.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LinkScreen extends StatefulWidget {
   LinkScreen({Key key}) : super(key: key);
@@ -15,14 +9,17 @@ class LinkScreen extends StatefulWidget {
   _LinkScreenState createState() => new _LinkScreenState();
 }
 
-class _LinkScreenState extends State<LinkScreen> {
+class _LinkScreenState extends State<LinkScreen> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   // AdmobInterstitial interstitialAd;
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController phoneTxtController = new TextEditingController();
   TextEditingController messageTxtController = new TextEditingController();
   List<Map<String, String>> numbers = new List<Map<String, String>>();
   bool isSaveNumber = false;
-  String code = "+1";
+  String code = "+84";
+  // String code = "+1";
   String phone = "";
   List statusLink = [false, false, false, false];
   @override
@@ -123,7 +120,8 @@ class _LinkScreenState extends State<LinkScreen> {
                           Container(
                             width: 100.0,
                             child: CountryCodePicker(
-                              initialSelection: 'US',
+                              // initialSelection: 'US',
+                              initialSelection: 'VN',
                               onChanged: (code) {
                                 print(code.dialCode);
                                 setState(() {
