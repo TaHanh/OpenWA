@@ -20,9 +20,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
   final List<Widget> _children = [OpenWAScreen(), LinkScreen()];
+  PageController _pageController;
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: _currentIndex);
     getAppID();
   }
 
@@ -31,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _currentIndex = index;
     });
+    _pageController.animateToPage(index, duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 
   @override
@@ -98,7 +101,12 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: _children[_currentIndex],
+      body: PageView(
+        controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
+        children: <Widget>[OpenWAScreen(), LinkScreen()],
+        onPageChanged: (page) {},
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,

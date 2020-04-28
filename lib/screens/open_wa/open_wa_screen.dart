@@ -21,8 +21,7 @@ class _OpenWAScreenState extends State<OpenWAScreen> with AutomaticKeepAliveClie
   TextEditingController messageTxtController = new TextEditingController();
   List<dynamic> numbers = [];
   bool isSaveNumber = false;
-  String code = "+84";
-  // String code = "+1";
+  String code = "+1";
   @override
   void initState() {
     super.initState();
@@ -156,8 +155,7 @@ class _OpenWAScreenState extends State<OpenWAScreen> with AutomaticKeepAliveClie
                           Container(
                             width: 100.0,
                             child: CountryCodePicker(
-                              initialSelection: 'VN',
-                              // initialSelection: 'US',
+                              initialSelection: 'US',
                               onChanged: (code) {
                                 print(code.dialCode);
                                 setState(() {

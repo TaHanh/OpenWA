@@ -12,20 +12,17 @@ class LinkScreen extends StatefulWidget {
 class _LinkScreenState extends State<LinkScreen> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  // AdmobInterstitial interstitialAd;
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController phoneTxtController = new TextEditingController();
   TextEditingController messageTxtController = new TextEditingController();
   List<Map<String, String>> numbers = new List<Map<String, String>>();
   bool isSaveNumber = false;
-  String code = "+84";
-  // String code = "+1";
+  String code = "+1";
   String phone = "";
   List statusLink = [false, false, false, false];
   @override
   void initState() {
     super.initState();
-    // getNumver();
   }
 
   @override
@@ -34,7 +31,7 @@ class _LinkScreenState extends State<LinkScreen> with AutomaticKeepAliveClientMi
       new ClipboardData(text: txt),
     );
     scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: new Text("Clipboard succes"),
+      content: new Text("Clipboard success"),
       duration: Duration(seconds: 1),
       backgroundColor: Color(0xFF009688).withOpacity(0.5),
     ));
@@ -120,8 +117,7 @@ class _LinkScreenState extends State<LinkScreen> with AutomaticKeepAliveClientMi
                           Container(
                             width: 100.0,
                             child: CountryCodePicker(
-                              // initialSelection: 'US',
-                              initialSelection: 'VN',
+                              initialSelection: 'US',
                               onChanged: (code) {
                                 print(code.dialCode);
                                 setState(() {
